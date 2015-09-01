@@ -1,0 +1,27 @@
+{
+    "name": "oregoncatholicpress/feature",
+    "type": "library",
+    "description": "A/B Testing, Enable/Disable features via config.",
+    "keywords": ["php", "feature", "flag"],
+    "license": "MIT",
+    "version": "0.0.1",
+    "authors": [
+        {
+            "name": "Damon Zwolinski",
+            "email": "damonz@ocp.org"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+	},
+    "require-dev": {
+        "phpunit/phpunit": "4.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "OregonCatholicPress\\Feature\\": "src/"
+        }
+    },
+	"minimum-stability": "stable"
+}
+
