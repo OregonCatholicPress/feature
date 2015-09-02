@@ -1,15 +1,20 @@
 <?php
+namespace Feature;
 
 /**
  * @group dbunit
  * @medium
  */
-class Feature_WorldTest extends PHPUnit_Extensions_MultipleDatabase_TestCase {
+class WorldTest extends PHPUnit_Extensions_MultipleDatabase_TestCase
+{
     private $uaid;
     private $world;
-    private $user_id;
+    private $userId;
+    private $server;
+    private $globals;
 
-    function setUp() {
+    public function setUp($params = [])
+    {
         parent::setUp();
         UAIDCookie::resetState();
         UAIDCookie::setUpUAID();
@@ -18,70 +23,81 @@ class Feature_WorldTest extends PHPUnit_Extensions_MultipleDatabase_TestCase {
 
         $logger = $this->getMock('Logger', array('log'));
         $this->world = new Feature_World($logger);
-        $this->user_id = 991;
+        $this->userId = 991;
 
         $this->setLoggedUserId(null);
         $this->assertNull(Std::loggedUser());
+        $this->server = $params['server'] ? $params['server'] : [];
+        $this->globals = $params['global'] ? $params['global'] : [];
     }
 
-    function testIsAdminWithBlankUAIDCookie() {
-        $this->setLoggedUserId($this->user_id);
+    public function testIsAdminWithBlankUAIDCookie()
+    {
+        $this->setLoggedUserId($this->userId);
 
-        $this->assertFalse($this->world->isAdmin($this->user_id));
+        $this->assertFalse($this->world->isAdmin($this->userId));
     }
 
-    function testIsAdminWithValidNonAdminUserUAIDCookie() {
-        $this->setLoggedUserId($this->user_id);
-        $this->uaid->set(UAIDCookie::USER_ID_ATTRIBUTE, $this->user_id);
+    public function testIsAdminWithValidNonAdminUserUAIDCookie()
+    {
+        $this->setLoggedUserId($this->userId);
+        $this->uaid->set(UAIDCookie::USER_ID_ATTRIBUTE, $this->userId);
 
-        $this->assertFalse($this->world->isAdmin($this->user_id));
+        $this->assertFalse($this->world->isAdmin($this->userId));
     }
 
-    function testIsAdminWithValidAdminUAIDCookie() {
-        $this->setLoggedUserId($this->user_id);
-        $this->uaid->set(UAIDCookie::USER_ID_ATTRIBUTE, $this->user_id);
+    public function testIsAdminWithValidAdminUAIDCookie()
+    {
+        $this->setLoggedUserId($this->userId);
+        $this->uaid->set(UAIDCookie::USER_ID_ATTRIBUTE, $this->userId);
         $this->uaid->set(UAIDCookie::ADMIN_ATTRIBUTE, '1');
 
-        $this->assertTrue($this->world->isAdmin($this->user_id));
+        $this->assertTrue($this->world->isAdmin($this->userId));
     }
 
-    function testIsAdminWithNonLoggedInAdminAndValidAdminUAIDCookie() {
+    public function testIsAdminWithNonLoggedInAdminAndValidAdminUAIDCookie()
+    {
         $this->setLoggedUserId(null);
-        $this->uaid->set(UAIDCookie::USER_ID_ATTRIBUTE, $this->user_id);
+        $this->uaid->set(UAIDCookie::USER_ID_ATTRIBUTE, $this->userId);
         $this->uaid->set(UAIDCookie::ADMIN_ATTRIBUTE, '1');
 
-        $this->assertFalse($this->world->isAdmin($this->user_id));
+        $this->assertFalse($this->world->isAdmin($this->userId));
     }
 
-    function testIsAdminWithLoggedInAdminUserAndBlankUAIDCookie() {
+    public function testIsAdminWithLoggedInAdminUserAndBlankUAIDCookie()
+    {
         $user = $this->adminUser();
-        $this->setLoggedUserId($user->user_id);
+        $this->setLoggedUserId($user->userId);
 
-        $this->assertTrue($this->world->isAdmin($user->user_id));
+        $this->assertTrue($this->world->isAdmin($user->userId));
     }
 
-    function testIsAdminWithLoggedInNonAdminUserAndBlankUAIDCookie() {
+    public function testIsAdminWithLoggedInNonAdminUserAndBlankUAIDCookie()
+    {
         $user = $this->nonAdminUser();
-        $this->setLoggedUserId($user->user_id);
+        $this->setLoggedUserId($user->userId);
 
-        $this->assertFalse($this->world->isAdmin($user->user_id));
+        $this->assertFalse($this->world->isAdmin($user->userId));
     }
 
-    function testIsAdminWithNonLoggedInAdminUserAndBlankUAIDCookie() {
+    public function testIsAdminWithNonLoggedInAdminUserAndBlankUAIDCookie()
+    {
         $user = $this->adminUser();
         $this->setLoggedUserId(null);
 
-        $this->assertTrue($this->world->isAdmin($user->user_id));
+        $this->assertTrue($this->world->isAdmin($user->userId));
     }
 
-    function testIsAdminWithNonLoggedInNonAdminUserAndBlankUAIDCookie() {
+    public function testIsAdminWithNonLoggedInNonAdminUserAndBlankUAIDCookie()
+    {
         $user = $this->nonAdminUser();
         $this->setLoggedUserId(null);
 
-        $this->assertFalse($this->world->isAdmin($user->user_id));
+        $this->assertFalse($this->world->isAdmin($user->userId));
     }
 
-    function testAtlasWorld() {
+    public function testAtlasWorld()
+    {
         $user = $this->atlasUser();
         $this->setLoggedUserId($user->id);
         $this->setAtlasRequest(true);
@@ -93,7 +109,8 @@ class Feature_WorldTest extends PHPUnit_Extensions_MultipleDatabase_TestCase {
         $this->setAtlasRequest(false);
     }
 
-    function testHash() {
+    public function testHash()
+    {
         $this->assertInternalType('float', $this->world->hash('somevalue'));
 
         $this->assertEquals(
@@ -106,48 +123,54 @@ class Feature_WorldTest extends PHPUnit_Extensions_MultipleDatabase_TestCase {
         $this->assertLessThan(1, $this->world->hash('somevalue'));
     }
 
-    protected function getDatabaseConfigs() {
-        $index_yml = dirname(__FILE__) . '/data/world/etsy_index.yml';
-        if (!file_exists($index_yml)) {
-            throw new Exception($index_yml . ' does not exist');
+    protected function getDatabaseConfigs()
+    {
+        $indexYml = dirname(__FILE__) . '/data/world/etsyIndex.yml';
+        if (!file_exists($indexYml)) {
+            throw new Exception($indexYml . ' does not exist');
         }
         $builder = new PHPUnit_Extensions_MultipleDatabase_DatabaseConfig_Builder();
-        $etsy_index = $builder
+        $etsyIndex = $builder
             ->connection(Testing_EtsyORM_Connections::ETSY_INDEX())
-            ->dataSet(new PHPUnit_Extensions_Database_DataSet_YamlDataSet($index_yml))
+            ->dataSet(new PHPUnit_Extensions_Database_DataSet_YamlDataSet($indexYml))
             ->build();
 
-        $aux_yml = dirname(__FILE__) . '/data/world/etsy_aux.yml';
-        if (!file_exists($aux_yml)) {
-            throw new Exception($aux_yml . ' does not exist');
+        $auxYml = dirname(__FILE__) . '/data/world/etsyAux.yml';
+        if (!file_exists($auxYml)) {
+            throw new Exception($auxYml . ' does not exist');
         }
         $builder = new PHPUnit_Extensions_MultipleDatabase_DatabaseConfig_Builder();
-        $etsy_aux = $builder
+        $etsyAux = $builder
             ->connection(Testing_EtsyORM_Connections::ETSY_AUX())
-            ->dataSet(new PHPUnit_Extensions_Database_DataSet_YamlDataSet($aux_yml))
+            ->dataSet(new PHPUnit_Extensions_Database_DataSet_YamlDataSet($auxYml))
             ->build();
 
-        return array($etsy_index, $etsy_aux);
+        return array($etsyIndex, $etsyAux);
     }
 
-    private function nonAdminUser() {
+    private function nonAdminUser()
+    {
         return EtsyORM::getFinder('User')->find(1);
     }
 
-    private function adminUser() {
+    private function adminUser()
+    {
         return EtsyORM::getFinder('User')->find(2);
     }
 
-    private function atlasUser() {
+    private function atlasUser()
+    {
         return EtsyORM::getFinder('Staff')->find(3);
     }
 
-    private function setAtlasRequest($is_atlas) {
-        $_SERVER["atlas_request"] = $is_atlas ? 1 : 0;
+    private function setAtlasRequest($isAtlas)
+    {
+        $this->server["atlas_request"] = $isAtlas ? 1 : 0;
     }
 
-    private function setLoggedUserId($user_id) {
+    private function setLoggedUserId($userId)
+    {
         //Std::loggedUser() uses this global
-        $GLOBALS['cookie_user_id'] = $user_id;
+        $this->globals['cookie_userId'] = $userId;
     }
 }

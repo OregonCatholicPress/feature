@@ -1,0 +1,15 @@
+#! /bin/bash
+
+# Check PHP Syntax
+for i in `find src tests -name '*.php'`
+do
+	php -l $i
+done
+
+# Run PHP Code Sniffer
+phpcs --standard=PSR2 src tests
+
+# Run PHP Mess Detector
+phpmd src text codesize,controversial,design,naming,unusedcode 
+phpmd tests text codesize,controversial,design,naming,unusedcode 
+

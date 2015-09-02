@@ -1,4 +1,5 @@
 <?php
+namespace OregonCatholicPress\Feature;
 
 /**
  * The interface Feature_Config needs to the outside world. This class
@@ -8,101 +9,121 @@
  * passing stuff back and forth between here and Logger and Logger has
  * no useful independent existence.
  */
-class Feature_World {
+class World
+{
 
-    private $_logger;
-    private $_selections = array();
+    private $logger;
+    private $selections = array();
+    private $get = [];
 
-    public function __construct ($logger) {
-        $this->_logger = $logger;
+    public function __construct($logger, $params = [])
+    {
+        $this->logger = $logger;
+        $this->get = (isset($params['get'])) ? $params['get'] : $_GET;
     }
 
     /*
      * Get the config value for the given key.
      */
-    public function configValue($name, $default = null) {
+    public function configValue($name, $default = null)
+    {
+        $name;
         return $default; // IMPLEMENT FOR YOUR CONTEXT
     }
 
     /**
-     * UAID of the current request.
+     * UAId of the current request.
      */
-    public function uaid() {
+    public function uaid()
+    {
         return null; // IMPLEMENT FOR YOUR CONTEXT
     }
 
     /**
-     * User ID of the currently logged in user or null.
+     * User Id of the currently logged in user or null.
      */
-    public function userID () {
+    public function userId()
+    {
         return null; // IMPLEMENT FOR YOUR CONTEXT
     }
 
     /**
      * Login name of the currently logged in user or null. Needs the
      * ORM. If we're running as part of an Atlas request we ignore the
-     * passed in userID and return instead the Atlas user name.
+     * passed in userId and return instead the Atlas user name.
      */
-    public function userName ($userID) {
+    public function userName($userId)
+    {
+        $userId;
         return null; // IMPLEMENT FOR YOUR CONTEXT
     }
 
     /**
      * Is the given user a member of the given group? (This currently,
-     * like the old config system, uses numeric group IDs in the
-     * config file, in order to speed up the lookup--the numeric ID is
+     * like the old config system, uses numeric group Ids in the
+     * config file, in order to speed up the lookup--the numeric Id is
      * the primary key and we save having to look up the group by
      * name.)
      */
-    public function inGroup ($userID, $groupID) {
+    public function inGroup($userId, $groupId)
+    {
+        $userId;
+        $groupId;
         return null; // IMPLEMENT FOR YOUR CONTEXT
     }
 
     /**
      * Is the current user an admin?
      *
-     * @param $userID the id of the relevant user, either the
+     * @param $userId the id of the relevant user, either the
      * currently logged in user or some other user.
      */
-    public function isAdmin ($userID) {
+    public function isAdmin($userId)
+    {
+        $userId;
         return false; // IMPLEMENT FOR YOUR CONTEXT
     }
 
     /**
      * Is this an internal request?
      */
-    public function isInternalRequest () {
+    public function isInternalRequest()
+    {
         return false; // IMPLEMENT FOR YOUR CONTEXT
     }
 
     /*
      * 'features' query param for url overrides.
      */
-    public function urlFeatures () {
-        return array_key_exists('features', $_GET) ? $_GET['features'] : '';
+    public function urlFeatures()
+    {
+        return array_key_exists('features', $this->get) ? $this->get['features'] : '';
     }
 
     /*
      * Produce a random number in [0, 1) for RANDOM bucketing.
      */
-    public function random () {
+    public function random()
+    {
         return mt_rand(0, mt_getrandmax() - 1) / mt_getrandmax();
     }
 
     /*
      * Produce a randomish number in [0, 1) based on the given id.
      */
-    public function hash ($id) {
-        return self::mapHex(hash('sha256', $id));
+    public function hash($int)
+    {
+        return self::mapHex(hash('sha256', $int));
     }
 
     /*
      * Record that $variant has been selected for feature named $name
      * by $selector and pass the same information along to the logger.
      */
-    public function log ($name, $variant, $selector) {
-        $this->_selections[] = array($name, $variant, $selector);
-        $this->_logger->log($name, $variant, $selector);
+    public function log($name, $variant, $selector)
+    {
+        $this->selections[] = array($name, $variant, $selector);
+        $this->logger->log($name, $variant, $selector);
     }
 
     /*
@@ -110,8 +131,9 @@ class Feature_World {
      * API for getting at the selections is Feature::selections which
      * should be the only caller of this method.
      */
-    public function selections () {
-        return $this->_selections;
+    public function selections()
+    {
+        return $this->selections;
     }
 
     /**
@@ -121,15 +143,16 @@ class Feature_World {
      * @param string $hex a hex string
      * @return float
      */
-    private static function mapHex($hex) {
+    private static function mapHex($hex)
+    {
         $len = min(40, strlen($hex));
-        $vMax = 1 << $len;
-        $v = 0;
-        for ($i = 0; $i < $len; $i++) {
-            $bit = hexdec($hex[$i]) < 8 ? 0 : 1;
-            $v = ($v << 1) + $bit;
+        $maxValue = 1 << $len;
+        $value = 0;
+        for ($idx = 0; $idx < $len; $idx++) {
+            $bit = hexdec($hex[$idx]) < 8 ? 0 : 1;
+            $value = ($value << 1) + $bit;
         }
-        $w = $v / $vMax;
-        return $w;
+        $float = $value / $maxValue;
+        return $float;
     }
 }

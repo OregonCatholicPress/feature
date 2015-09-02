@@ -1,21 +1,25 @@
 <?php
+namespace OregonCatholicPress\Feature;
 
 /*
  * Utility for turning configs into JSON-encodeable data.
  */
-class Feature_JSON {
+class JSON
+{
 
     /*
      * Return the given config stanza as an array that can be json
      * encoded in a form that is slightly easier to deal with in
      * Javascript.
      */
-    public static function stanza ($key, $server_config=null) {
-        $stanza = self::findStanza($key, $server_config);
+    public static function stanza($key, $serverConfig = null)
+    {
+        $stanza = self::findStanza($key, $serverConfig);
         return $stanza !== false ? self::translate($key, $stanza) : false;
     }
 
-    private static function findStanza($key, $cursor) {
+    private static function findStanza($key, $cursor)
+    {
         $step = strtok($key, '.');
         while ($step) {
             if (is_array($cursor) && array_key_exists($step, $cursor)) {
@@ -28,42 +32,43 @@ class Feature_JSON {
         return $cursor;
     }
 
-    private static function translate ($key, $value) {
+    private static function translate($key, $value)
+    {
 
         $spec = self::makeSpec($key);
 
-        $internal_url = true;
+        $internalUrl = true;
 
         if (is_numeric($value)) {
             $value = array('enabled' => (int)$value);
-        } else if (is_string($value)) {
+        } elseif (is_string($value)) {
             $value = array('enabled' => $value);
         }
 
-        $enabled = Feature_Util::arrayGet($value, 'enabled', 0);
-        $users   = self::expandUsersOrGroups(Feature_Util::arrayGet($value, 'users', array()));
-        $groups  = self::expandUsersOrGroups(Feature_Util::arrayGet($value, 'groups', array()));
+        $enabled = Util::arrayGet($value, 'enabled', 0);
+        $users   = self::expandUsersOrGroups(Util::arrayGet($value, 'users', array()));
+        $groups  = self::expandUsersOrGroups(Util::arrayGet($value, 'groups', array()));
 
         if ($enabled === 'off') {
             $spec['variants'][] = self::makeVariantWithUsersAndGroups('on', 0, $users, $groups);
-            $internal_url = false;
-        } else if (is_numeric($enabled)) {
+            $internalUrl = false;
+        } elseif (is_numeric($enabled)) {
             $spec['variants'][] = self::makeVariantWithUsersAndGroups('on', (int)$enabled, $users, $groups);
-        } else if (is_string($enabled)) {
+        } elseif (is_string($enabled)) {
             $spec['variants'][] = self::makeVariantWithUsersAndGroups($enabled, 100, $users, $groups);
-            $internal_url = false;
-        } else if (is_array($enabled)) {
-            foreach ($enabled as $v => $p) {
-                if (is_numeric($p)) {
-                    // Kind of a kludge. $p had better be numeric and
+            $internalUrl = false;
+        } elseif (is_array($enabled)) {
+            foreach ($enabled as $version => $amount) {
+                if (is_numeric($amount)) {
+                    // Kind of a kludge. $amount had better be numeric and
                     // there have been configs deployed where it
                     // wasn't which breaks the Catapult config history
                     // scripts. This will just skip those.
-                    $spec['variants'][] = self::makeVariantWithUsersAndGroups($v, $p, $users, $groups);
+                    $spec['variants'][] = self::makeVariantWithUsersAndGroups($version, $amount, $users, $groups);
                 }
             }
         }
-        $spec['internal_url_override'] = $internal_url;
+        $spec['internalUrl_override'] = $internalUrl;
 
         if (array_key_exists('admin', $value)) {
             $spec['admin'] = $value['admin'];
@@ -84,10 +89,11 @@ class Feature_JSON {
         return $spec;
     }
 
-    private static function makeSpec ($key) {
+    private static function makeSpec($key)
+    {
         return array(
             'key' => $key,
-            'internal_url_override' => false,
+            'internalUrl_override' => false,
             'public_url_override' => false,
             'bucketing' => 'uaid',
             'admin' => null,
@@ -95,6 +101,7 @@ class Feature_JSON {
             'variants' => array());
     }
 
+/*
     private static function makeVariant ($name, $percentage) {
         return array(
             'name' => $name,
@@ -102,8 +109,10 @@ class Feature_JSON {
             'users' => array(),
             'groups' => array());
     }
+*/
 
-    private static function makeVariantWithUsersAndGroups ($name, $percentage, $users, $groups) {
+    private static function makeVariantWithUsersAndGroups($name, $percentage, $users, $groups)
+    {
         return array(
             'name'       => $name,
             'percentage' => $percentage,
@@ -112,7 +121,8 @@ class Feature_JSON {
         );
     }
 
-    private static function extractForVariant ($usersOrGroups, $name) {
+    private static function extractForVariant($usersOrGroups, $name)
+    {
         $result = array();
         foreach ($usersOrGroups as $thing => $variant) {
             if ($variant == $name) {
@@ -122,17 +132,18 @@ class Feature_JSON {
         return $result;
     }
 
-    // This is based on parseUsersOrGroups in Feature_Config. Probably
+    // This is based on parseUsersOrGroups in Config. Probably
     // this logic should be put in that class in a form that we can
     // use.
-    private static function expandUsersOrGroups ($value) {
+    private static function expandUsersOrGroups($value)
+    {
         if (is_string($value) || is_numeric($value)) {
-            return array($value => Feature_Config::ON);
+            return array($value => Config::ON);
 
         } elseif (self::isList($value)) {
             $result = array();
             foreach ($value as $who) {
-                $result[$who] = Feature_Config::ON;
+                $result[$who] = Config::ON;
             }
             return $result;
 
@@ -150,12 +161,13 @@ class Feature_JSON {
         }
     }
 
-    private static function isList($a) {
-        return is_array($a) and array_keys($a) === range(0, count($a) - 1);
+    private static function isList($var)
+    {
+        return is_array($var) and array_keys($var) === range(0, count($var) - 1);
     }
 
-    private static function asArray ($x) {
-        return is_array($x) ? $x : array($x);
+    private static function asArray($var)
+    {
+        return is_array($var) ? $var : array($var);
     }
-
 }
