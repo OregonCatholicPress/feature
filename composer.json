@@ -1,5 +1,5 @@
 {
-    "name": "oregoncatholicpress/feature",
+    "name": "OregonCatholicPress/Feature",
     "type": "library",
     "description": "A/B Testing, Enable/Disable features via config.",
     "keywords": ["php", "feature", "flag"],
@@ -13,15 +13,16 @@
     ],
     "require": {
         "php": ">=5.4.0"
-	},
+    },
     "require-dev": {
-        "phpunit/phpunit": "4.*"
+        "phpunit/phpunit": "4.*",
+        "psy/psysh": "0.*"
     },
     "autoload": {
         "psr-4": {
             "OregonCatholicPress\\Feature\\": "src/"
         }
     },
-	"minimum-stability": "stable"
+    "minimum-stability": "stable"
 }
 

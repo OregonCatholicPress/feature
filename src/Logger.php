@@ -7,7 +7,6 @@ namespace OregonCatholicPress\Feature;
  */
 class Logger
 {
-
     /*
      * Log that the feature $name was checked with $variant selected
      * by $selector. This is only called once per feature/bucketing id

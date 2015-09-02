@@ -1,5 +1,5 @@
 <?php
-namespace OregonCatholicPress\Feature;
+namespace OregonCatholicPress\Feature\Instance;
 
 /**
  * A thin wrapper around the static Feature API for use in

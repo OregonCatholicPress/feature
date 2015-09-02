@@ -1,6 +1,8 @@
 <?php
 namespace OregonCatholicPress\Feature;
 
+use \OregonCatholicPress\Feature\Util;
+
 /**
  * A feature that can be enabled, disabled, ramped up, and A/B tested,
  * as well as enabled for certain classes of users. These objects
@@ -393,7 +395,7 @@ class Config
 
     private function parseDescription($stanza)
     {
-        return Feature_Util::arrayGet($stanza, self::DESCRIPTION, 'No description.');
+        return Util::arrayGet($stanza, self::DESCRIPTION, 'No description.');
     }
 
     /*
@@ -402,7 +404,7 @@ class Config
     private function parseEnabled($stanza)
     {
 
-        $enabled = Feature_Util::arrayGet($stanza, self::ENABLED, 0);
+        $enabled = Util::arrayGet($stanza, self::ENABLED, 0);
 
         if (is_numeric($enabled)) {
             if ($enabled < 0) {
@@ -454,7 +456,7 @@ class Config
      */
     private function parseUsersOrGroups($stanza, $what)
     {
-        $value = Feature_Util::arrayGet($stanza, $what);
+        $value = Util::arrayGet($stanza, $what);
         if (is_string($value) || is_numeric($value)) {
             // Users are configrued with their user names. Groups as
             // numeric ids. (Not sure if that's a great idea.)
@@ -495,7 +497,7 @@ class Config
      */
     private function parseVariantName($stanza, $what)
     {
-        $value = Feature_Util::arrayGet($stanza, $what);
+        $value = Util::arrayGet($stanza, $what);
         if ($value) {
             if (is_array($this->enabled)) {
                 if (array_key_exists($value, $this->enabled)) {
@@ -513,12 +515,12 @@ class Config
 
     private function parsePublicURLOverride($stanza)
     {
-        return Feature_Util::arrayGet($stanza, self::PUBLIC_URL_OVERRIDE, false);
+        return Util::arrayGet($stanza, self::PUBLIC_URL_OVERRIDE, false);
     }
 
     private function parseBucketBy($stanza)
     {
-        return Feature_Util::arrayGet($stanza, self::BUCKETING, self::UAID);
+        return Util::arrayGet($stanza, self::BUCKETING, self::UAID);
     }
 
     ////////////////////////////////////////////////////////////////////////
