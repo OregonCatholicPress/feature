@@ -2,7 +2,7 @@
 namespace OregonCatholicPress\Feature;
 
 use \OregonCatholicPress\Feature\Config as Config;
-use \OregonCatholicPress\Feature\Instance as FeatureInstance;
+use \OregonCatholicPress\Feature\Instance as Instance;
 use \OregonCatholicPress\Feature\Lint as Lint;
 use \OregonCatholicPress\Feature\Logger as Logger;
 use \OregonCatholicPress\Feature\World as World;
@@ -48,7 +48,7 @@ class Feature
     public static function getInstance()
     {
         if (!isset(self::$instance)) {
-            self::$instance = new FeatureInstance();
+            self::$instance = new Instance();
         }
         return self::$instance;
     }

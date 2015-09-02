@@ -1,8 +1,6 @@
 <?php
 namespace OregonCatholicPress\Feature;
 
-use \OregonCatholicPress\Feature\Util;
-
 /**
  * A feature that can be enabled, disabled, ramped up, and A/B tested,
  * as well as enabled for certain classes of users. These objects
