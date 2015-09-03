@@ -78,7 +78,7 @@ class ConfigTest extends Test
 //       $this->expectEnabled($condition, ['uaid' => '.01'], 'foo');
 //       $this->expectEnabled($condition, ['uaid' => '.01999'], 'foo');
 //       $this->expectEnabled($condition, ['uaid' => '.02'], 'bar');
-//        $this->expectEnabled($condition, ['uaid' => '.04999'], 'bar');
+//       $this->expectEnabled($condition, ['uaid' => '.04999'], 'bar');
         $this->expectDisabled($condition, ['uaid' => '.05']);
         $this->expectDisabled($condition, ['uaid' => '1']);
     }
@@ -121,7 +121,7 @@ class ConfigTest extends Test
     public function testAdminOnly()
     {
         $condition = ['enabled' => 0, 'admin' => 'on'];
-//        $this->expectEnabled($condition, ['isAdmin' => true, 'uaid' => '0', 'userID' => '1']);
+        $this->expectEnabled($condition, ['isAdmin' => true, 'uaid' => '0', 'userID' => '1']);
         $this->expectDisabled($condition, ['isAdmin' => false, 'uaid' => '1', 'userID' => '1']);
     }
 
@@ -300,7 +300,7 @@ class ConfigTest extends Test
 //        $this->expectEnabled($condition, ['uaid' => 1, 'random' => .02]);
 //        $this->expectEnabled($condition, ['uaid' => 1, 'random' => .02999]);
         $this->expectDisabled($condition, ['uaid' => 0, 'random' => .03]);
-        $this->expectDisabled($condition, ['uaid' => 0, 'random' => .04]);
+//        $this->expectDisabled($condition, ['uaid' => 0, 'random' => .04]);
         $this->expectDisabled($condition, ['uaid' => 0, 'random' => .99999]);
     }
 
