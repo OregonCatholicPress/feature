@@ -2,7 +2,7 @@
 namespace OregonCatholicPress\Feature;
 
 /**
- * The interface Feature_Config needs to the outside world. This class
+ * The interface Config needs to the outside world. This class
  * is used in the normal case but tests can use a mock
  * version. There's a reasonable argument that the code in Logger
  * should just be moved into this class since there's a fair bit of
@@ -12,9 +12,10 @@ namespace OregonCatholicPress\Feature;
 class World
 {
 
-    private $logger;
-    private $selections = array();
-    private $get = [];
+    /** @todo 2015-09-02 damonz: properties were private; use Reflection or better mocking and change back? */
+    protected $logger;
+    protected $selections = array();
+    protected $get = [];
 
     public function __construct($logger, $params = [])
     {
