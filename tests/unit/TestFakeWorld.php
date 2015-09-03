@@ -21,8 +21,8 @@ class FakeWorldTest extends Test
 
     public function testIsAdmin()
     {
-       $world = new FakeWorld(['isAdmin' => true]);
-       $this->assertTrue($world->isAdmin(1234));
+        $world = new FakeWorld(['isAdmin' => true]);
+        $this->assertTrue($world->isAdmin(1234));
     }
 
     public function testIsNotAdmin()
@@ -40,7 +40,7 @@ class FakeWorldTest extends Test
     public function testUserId()
     {
         $world = new FakeWorld(['userID' => 1234]);
-        $this->assertEquals(1234, $world->userId()); 
+        $this->assertEquals(1234, $world->userId());
     }
 
     public function testUserName()
@@ -58,14 +58,14 @@ class FakeWorldTest extends Test
     public function testUrlFeatures()
     {
         $world = new FakeWorld(['urlFeatures' => 'some-feature']);
-        $this->assertEquals('some-feature', $world->urlFeatures()); 
+        $this->assertEquals('some-feature', $world->urlFeatures());
     }
 
     public function testRandom()
     {
         $world = new FakeWorld();
         $random = $world->random();
-        $this->assertGreaterThanOrEqual(0, $random); 
+        $this->assertGreaterThanOrEqual(0, $random);
         $this->assertLessThanOrEqual(1, $random);
         $this->assertTrue(is_float($random));
     }

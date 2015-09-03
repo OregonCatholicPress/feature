@@ -9,9 +9,9 @@ namespace OregonCatholicPress\Feature;
  */
 class Config
 {
-	const DEBUG = false;
-	const INDENT = 4;
-	const UNINDENT = -4;
+    const DEBUG = false;
+    const INDENT = 4;
+    const UNINDENT = -4;
 
     /* Keys used in a feature configuration. */
     const DESCRIPTION         = 'description';
@@ -91,17 +91,23 @@ class Config
      */
     public function isEnabled()
     {
-		if (self::DEBUG) $this->dbg('Config::isEnabled()', self::INDENT);
+        if (self::DEBUG) {
+            $this->dbg('Config::isEnabled()', self::INDENT);
+        }
         $bucketingID = $this->bucketingID();
-		if (self::DEBUG) $this->dbg('- $bucketingID: '.$bucketingID);
+        if (self::DEBUG) {
+            $this->dbg('- $bucketingID: '.$bucketingID);
+        }
         $userID = $this->world->userID();
-		if (self::DEBUG) $this->dbg('- $userID: '.$userID);
+        if (self::DEBUG) {
+            $this->dbg('- $userID: '.$userID);
+        }
         $variant = $this->chooseVariant($bucketingID, $userID, false) !== self::OFF;
-		if (self::DEBUG) {
-			$this->dbg('- $variant: '.$variant);
-			$this->dbg(null, self::UNINDENT);
-		}
-		return $variant;
+        if (self::DEBUG) {
+            $this->dbg('- $variant: '.$variant);
+            $this->dbg(null, self::UNINDENT);
+        }
+        return $variant;
     }
 
     /*
@@ -204,7 +210,9 @@ class Config
      */
     private function chooseVariant($bucketingID, $userID, $inVariantMethod)
     {
-		if (self::DEBUG) $this->dbg('Config::chooseVariant('.$bucketingID.','.$userID.','.$inVariantMethod.')', self::INDENT);
+        if (self::DEBUG) {
+            $this->dbg('Config::chooseVariant('.$bucketingID.','.$userID.','.$inVariantMethod.')', self::INDENT);
+        }
         if ($inVariantMethod && $this->enabled === self::ON) {
             $this->error("Variant check when fully enabled");
         }
@@ -212,14 +220,16 @@ class Config
         if (is_string($this->enabled)) {
             // When enabled is on, off, or a variant name, that's the
             // end of the story.
-			if (self::DEBUG) {
- 				$this->dbg('- is_string($this->enabled)');
-				$this->dbg('- $this->enabled: '.$this->enabled);
-				$this->dbg(null, self::UNINDENT);
-			}
+            if (self::DEBUG) {
+                $this->dbg('- is_string($this->enabled)');
+                $this->dbg('- $this->enabled: '.$this->enabled);
+                $this->dbg(null, self::UNINDENT);
+            }
             return $this->enabled;
         } else {
-			if (self::DEBUG) $this->dbg('- else');
+            if (self::DEBUG) {
+                $this->dbg('- else');
+            }
             if (is_null($bucketingID)) {
                 throw new InvalidArgumentException(
                     "no bucketing ID supplied. if testing, configure feature " .
@@ -229,9 +239,18 @@ class Config
             }
 
             $bucketingID = (string)$bucketingID;
-			if (self::DEBUG) $this->dbg('  - $bucketingID: '.$bucketingID);
+            if (self::DEBUG) {
+                $this->dbg('  - $bucketingID: '.$bucketingID);
+            }
             if (array_key_exists($bucketingID, $this->cache)) {
-				if (self::DEBUG) $this->dbg('    - array_key_exists($bucketingID, $this->cache)'. array_key_exists($bucketingID, $this->cache));
+                if (self::DEBUG) {
+                    $this->dbg(
+                        '    - array_key_exists($bucketingID, $this->cache)'. array_key_exists(
+                            $bucketingID,
+                            $this->cache
+                        )
+                    );
+                }
                 // Note that this caching is not just an optimization:
                 // it prevents us from double logging a single
                 // feature--we only want to log each distinct checked
@@ -243,7 +262,9 @@ class Config
                 // enabled status stable within a request.
                 return $this->cache[$bucketingID];
             } else {
-				if (self::DEBUG) $this->dbg('    - else');
+                if (self::DEBUG) {
+                    $this->dbg('    - else');
+                }
                 list($variant, $selector) =
                     $this->variantFromURL($userID) ?:
                     $this->variantForUser($userID) ?:
@@ -252,19 +273,19 @@ class Config
                     $this->variantForInternal() ?:
                     $this->variantByPercentage($bucketingID) ?:
                     array(self::OFF, 'w');
-					if (self::DEBUG) {
-						$this->dbg('    - $variant: '.$variant);
-						$this->dbg('    - $selector: '.$selector);
-					}
+                if (self::DEBUG) {
+                    $this->dbg('    - $variant: '.$variant);
+                    $this->dbg('    - $selector: '.$selector);
+                }
                 if ($inVariantMethod && $variant === self::OFF) {
                     $this->error("Variant check outside enabled check");
                 }
 
                 $this->world->log($this->name, $variant, $selector);
-				if (self::DEBUG) {
-					$this->dbg('    - $this->cache[$bucketingID] = $variant: '.$variant); 
-					$this->dbg(null, self::UNINDENT);
-				}
+                if (self::DEBUG) {
+                    $this->dbg('    - $this->cache[$bucketingID] = $variant: '.$variant);
+                    $this->dbg(null, self::UNINDENT);
+                }
                 return $this->cache[$bucketingID] = $variant;
             }
         }
@@ -276,7 +297,9 @@ class Config
      */
     private function bucketingID()
     {
-if (self::DEBUG) $this->dbg('Config::bucketingID()', self::INDENT);
+        if (self::DEBUG) {
+            $this->dbg('Config::bucketingID()', self::INDENT);
+        }
         switch ($this->bucketing) {
             case self::UAID:
             case self::RANDOM:
@@ -286,8 +309,12 @@ if (self::DEBUG) $this->dbg('Config::bucketingID()', self::INDENT);
                 // there is no UAID, so we default to a static string
                 $uaid = $this->world->uaid();
 // var_dump($this->world);
-if (self::DEBUG) $this->dbg('- self::UAID/self::RANDOM');
-if (self::DEBUG) $this->dbg(null, self::UNINDENT);
+                if (self::DEBUG) {
+                    $this->dbg('- self::UAID/self::RANDOM');
+                }
+                if (self::DEBUG) {
+                    $this->dbg(null, self::UNINDENT);
+                }
                 return $uaid ? $uaid : "no uaid";
             case self::USER:
 // var_dump($this->world);
@@ -369,14 +396,18 @@ if (self::DEBUG) $this->dbg(null, self::UNINDENT);
      */
     private function variantForAdmin($userID)
     {
-		if (self::DEBUG) $this->dbg('Config::variantForAdmin('.$userID.')', self::INDENT);
+        if (self::DEBUG) {
+            $this->dbg('Config::variantForAdmin('.$userID.')', self::INDENT);
+        }
         if ($userID && $this->adminVariant) {
-			if (self::DEBUG) $this->dbg(' - $userID && $this->adminVariant: '.($userID && $this->adminVariant));
+            if (self::DEBUG) {
+                $this->dbg(' - $userID && $this->adminVariant: '.($userID && $this->adminVariant));
+            }
             if ($this->world->isAdmin($userID)) {
-				if (self::DEBUG) {
-					$this->dbg('    - $this->world->isAdmin($userID):');
-					$this->dbg('    - ['.$this->adminVariant.', "a"]', self::UNINDENT);
-				}
+                if (self::DEBUG) {
+                    $this->dbg('    - $this->world->isAdmin($userID):');
+                    $this->dbg('    - ['.$this->adminVariant.', "a"]', self::UNINDENT);
+                }
                 return array($this->adminVariant, 'a');
             }
         }
@@ -581,19 +612,19 @@ if (self::DEBUG) $this->dbg(null, self::UNINDENT);
         // IMPLEMENT FOR YOUR CONTEXT
     }
 
-	public function dbg($msg, $indent = 0)
-	{
-		static $first = true;
-		static $pad = self::UNINDENT;
-		if ($first){
-			echo "\n";
-			$first = false;
-		}
-		if ($indent) {
-			$pad += $indent;
-		}
-		if ($msg) {
-			echo str_repeat(' ', $pad).$msg."\n";
-		}
-	}
+    public function dbg($msg, $indent = 0)
+    {
+        static $first = true;
+        static $pad = self::UNINDENT;
+        if ($first) {
+            echo "\n";
+            $first = false;
+        }
+        if ($indent) {
+            $pad += $indent;
+        }
+        if ($msg) {
+            echo str_repeat(' ', $pad).$msg."\n";
+        }
+    }
 }

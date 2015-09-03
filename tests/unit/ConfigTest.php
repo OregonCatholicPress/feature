@@ -173,7 +173,7 @@ class ConfigTest extends Test
         $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'fred', 'userID' => '1']);
 //       $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'FunGuy', 'userID' => '1']);
 //       $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'FUNGUY', 'userID' => '1']);
-       $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'funguy', 'userID' => '1']);
+        $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'funguy', 'userID' => '1']);
     }
 
     public function testArrayOfUsers()
