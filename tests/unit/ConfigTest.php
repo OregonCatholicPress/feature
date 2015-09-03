@@ -358,7 +358,7 @@ class ConfigTest extends Test
             ->method('getUserId')
             ->will($this->returnValue($userId));
 */
-$user = (object) ['user_id' => 1];
+        $user = (object) ['user_id' => 1];
         $config = new Config('foo', ['enabled' => 'off'], new FakeWorld([]));
         $this->assertFalse($config->isEnabledFor($user));
     }
@@ -369,7 +369,7 @@ $user = (object) ['user_id' => 1];
         // We don't want to test the implementation of user bucketing here, just the public API
 //        $user = new EtsyModelUser();
 //        $user->userId = 1;
-$user = (object) ['user_id' => 1];
+        $user = (object) ['user_id' => 1];
         $config = new Config('foo', ['enabled' => 'off'], new FakeWorld([]));
         $this->assertFalse($config->isEnabledFor($user));
     }
@@ -388,7 +388,7 @@ $user = (object) ['user_id' => 1];
     {
         $config = new Config('some-feature-flag', $stanza, new FakeWorld($world));
         $this->assertTrue($config->isEnabled());
-        $this->assertEquals($config->variant(), $variant); 
+        $this->assertEquals($config->variant(), $variant);
         
         if (is_array($stanza) && array_key_exists('enabled', $stanza) && $stanza['enabled'] === 0) {
             unset($stanza['enabled']);

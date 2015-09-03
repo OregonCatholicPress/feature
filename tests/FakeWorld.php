@@ -3,7 +3,7 @@ namespace OregonCatholicPress\Feature\Tests;
 
 use OregonCatholicPress\Feature\World as World;
 
-class FakeWorld extends World 
+class FakeWorld extends World
 {
     private $params = [];
 
