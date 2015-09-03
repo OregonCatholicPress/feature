@@ -117,7 +117,6 @@ class ConfigTest extends Test
         ]);
     }
 
-    /** @todo 2015-09-02 damonz: Investigate and fix. */
     public function testAdminOnly()
     {
         $condition = ['enabled' => 0, 'admin' => 'on'];
@@ -129,16 +128,15 @@ class ConfigTest extends Test
     public function testAdminPlusSome()
     {
         $condition = ['enabled' => 10, 'admin' => 'on'];
-//        $this->expectEnabled($condition, ['isAdmin' => true, 'uaid' => '.5', 'userID' => '1']);
+        $this->expectEnabled($condition, ['isAdmin' => true, 'uaid' => '.5', 'userID' => '1']);
 //        $this->expectEnabled($condition, ['isAdmin' => false, 'uaid' => '.05', 'userID' => '1']);
         $this->expectDisabled($condition, ['isAdmin' => false, 'uaid' => '.5', 'userID' => '1']);
     }
     
-    /** @todo 2015-09-02 damonz: Investigate and fix. */
     public function testInternalOnly()
     {
         $condition = ['enabled' => 0, 'internal' => 'on'];
-//        $this->expectEnabled($condition, ['isInternal' => true, 'uaid' => '0']);
+        $this->expectEnabled($condition, ['isInternal' => true, 'uaid' => '0']);
         $this->expectDisabled($condition, ['isInternal' => false, 'uaid' => '1']);
     }
 
@@ -146,7 +144,7 @@ class ConfigTest extends Test
     public function testInternalPlusSome()
     {
         $condition = ['enabled' => 10, 'internal' => 'on'];
-//        $this->expectEnabled($condition, ['isInternal' => true, 'uaid' => '.5']);
+        $this->expectEnabled($condition, ['isInternal' => true, 'uaid' => '.5']);
 //        $this->expectEnabled($condition, ['isInternal' => false, 'uaid' => '.05']);
         $this->expectDisabled($condition, ['isInternal' => false, 'uaid' => '.5']);
     }
@@ -172,13 +170,12 @@ class ConfigTest extends Test
     public function testListOfUsersCaseInsensitive()
     {
         $condition = ['enabled' => 0, 'users' => ['fred', 'FunGuy']];
-//        $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'fred', 'userID' => '1']);
-//        $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'FunGuy', 'userID' => '1']);
+        $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'fred', 'userID' => '1']);
+//       $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'FunGuy', 'userID' => '1']);
 //       $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'FUNGUY', 'userID' => '1']);
-//       $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'funguy', 'userID' => '1']);
+       $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'funguy', 'userID' => '1']);
     }
 
-    /** @todo 2015-09-02 damonz: Investigate and fix. */
     public function testArrayOfUsers()
     {
         // It might be kind of nice to allow 'enabled' => 0 here but
@@ -193,9 +190,9 @@ class ConfigTest extends Test
                 'other' => 'ron'
             ]
         ];
-//        $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'fred', 'userID' => '1'], 'twins');
-//        $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'george', 'userID' => '2'], 'twins');
-//        $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'ron', 'userID' => '3'], 'other');
+        $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'fred', 'userID' => '1'], 'twins');
+        $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'george', 'userID' => '2'], 'twins');
+        $this->expectEnabled($condition, ['uaid' => '1', 'userName' => 'ron', 'userID' => '3'], 'other');
         $this->expectDisabled($condition, ['uaid' => '0', 'userName' => 'percy', 'userID' => '4']);
     }
 
@@ -332,7 +329,6 @@ class ConfigTest extends Test
         $this->assertFalse($config->isEnabled());
     }
 
-    /** @todo 2015-09-02 damonz: Investigate and fix. */
     public function testDescription()
     {
         // Default description.
@@ -345,7 +341,7 @@ class ConfigTest extends Test
         $condition = ['enabled' => 'on', 'description' => 'The description.'];
         $world = new FakeWorld([]);
         $config = new Config('foo', $condition, $world);
-//        $this->assertEquals($config->description(), 'The description.');
+        $this->assertEquals($config->description(), 'The description.');
     }
 
     /** @todo 2015-09-02 damonz: Investigate and fix. */
